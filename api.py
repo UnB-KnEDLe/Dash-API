@@ -5,10 +5,13 @@ import json, os
 
 app = Flask(__name__)
 
-files_list = []
-
 @app.route('/extract_content', methods=['POST'])
 def extract_content():
+    try:
+        type = request.form['type']
+    except:
+        type = 'regex'
+    
     f = request.files['file']
     f.save(f.filename)
 
@@ -17,7 +20,7 @@ def extract_content():
         text = ContentExtractor.extract_text("contrato1.pdf")
         temp_text.write(text)
     
-        acts_dfs = ActsExtractor.get_all_df('tmp_txt.txt', 'regex')
+        acts_dfs = ActsExtractor.get_all_df('tmp_txt.txt', type)
 
         return_list = []
         for act_name in acts_dfs:
