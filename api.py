@@ -24,16 +24,16 @@ def extract_content():
         text = ContentExtractor.extract_text(f.filename)
         temp_text.write(text)
 
+        acts_dfs = ActsExtractor.get_all_df('tmp_txt.txt', type)
+
         os.remove(f.filename)
         os.remove('tmp_txt.txt')
-    
-        acts_dfs = ActsExtractor.get_all_df('tmp_txt.txt', type)
 
         return_list = []
         for act_name in acts_dfs:
             df = acts_dfs[act_name]
-            for list in df.values.tolist():
-                return_list = return_list + list
+            for list_ in df.values.tolist():
+                return_list = return_list + list_
 
         return json.dumps(return_list)
         
