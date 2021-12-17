@@ -11,10 +11,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 @app.route('/extract_content', methods=['POST'])
 @cross_origin()
 def extract_content():
-    try:
-        type = request.form['type']
-    except:
-        type = 'regex'
+    type = 'ner'
 
     f = request.files['file']
     f.save(f.filename)
