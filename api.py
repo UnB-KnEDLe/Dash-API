@@ -10,13 +10,10 @@ app = Flask(__name__)
 cors = CORS(app, resources={r"/dash/api/*": {"origins": "*"}})
 # app.config['CORS_HEADERS'] = 'Content-Type'
 
-@app.route(f'{PREFIX}/extract_content', methods=['POST'])
+@app.route(f'{PREFIX}/extract_entity', methods=['POST'])
 @cross_origin()
-def extract_content():
-    try:
-        type = request.form['type']
-    except:
-        type = 'regex'
+def extract_entity():
+    type = 'ner'
 
     f = request.files['file']
     f.save(f.filename)
@@ -31,7 +28,7 @@ def extract_content():
         os.remove(f.filename)
         os.remove('tmp_txt.txt')
 
-        return_list = []
+        response = []
         for act_name in acts_dfs:
             df = acts_dfs[act_name]
             df = df.where(pd.notnull(df), None) # Remove NaN
@@ -39,12 +36,39 @@ def extract_content():
             if len(df_list) > 0:
                 for item in df_list:
                     del item[0]
-                return_list.append({
+                response.append({
                     'content': df_list,
                     'title': act_name
                 })
 
-        return jsonify(return_list)
+        return jsonify(response)
+        
+    return 'Not a pdf file', 400
+
+@app.route('/extract_acts', methods=['POST'])
+@cross_origin()
+def extract_acts():
+    f = request.files['file']
+    f.save(f.filename)
+
+    if 'pdf' in f.filename:
+        temp_text = open('tmp_txt.txt', 'w+')
+        text = ContentExtractor.extract_text(f.filename)
+        temp_text.write(text)
+
+        acts_dfs = ActsExtractor.get_all_obj('tmp_txt.txt', 'ner')
+    
+        os.remove(f.filename)
+        os.remove('tmp_txt.txt')
+
+        response = {}
+        for act_name in acts_dfs:
+            df = acts_dfs[act_name]
+            df = df.acts_str
+            print(df)
+            response[act_name] = df
+
+        return jsonify(response)
         
     return 'Not a pdf file', 400
 
