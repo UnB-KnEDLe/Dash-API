@@ -4,6 +4,4 @@ services:
     build: .
     command: python api.py
     ports:
-      - 5000:9001
-    volumes:
-      - ./:/api
+      - 5000:5000

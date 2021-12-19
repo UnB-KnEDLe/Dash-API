@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 from dodfminer.extract.pure.core import ContentExtractor
 from dodfminer.extract.polished.core import ActsExtractor
-import json, os, pandas as pd
+import os, pandas as pd
 
 PREFIX = '/dash/api'
 
@@ -45,7 +45,7 @@ def extract_entity():
         
     return 'Not a pdf file', 400
 
-@app.route('/extract_acts', methods=['POST'])
+@app.route(f'{PREFIX}/extract_acts', methods=['POST'])
 @cross_origin()
 def extract_acts():
     f = request.files['file']
@@ -73,4 +73,5 @@ def extract_acts():
     return 'Not a pdf file', 400
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    print('chegando aqui')
+    app.run('0.0.0.0', 5000)
