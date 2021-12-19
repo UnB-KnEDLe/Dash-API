@@ -4,11 +4,13 @@ from dodfminer.extract.pure.core import ContentExtractor
 from dodfminer.extract.polished.core import ActsExtractor
 import json, os, pandas as pd
 
-app = Flask(__name__)
-cors = CORS(app, CORS_ORIGINS="localhost:5000")
-app.config['CORS_HEADERS'] = 'Content-Type'
+PREFIX = '/dash/api'
 
-@app.route('/extract_content', methods=['POST'])
+app = Flask(__name__)
+cors = CORS(app, resources={r"/dash/api/*": {"origins": "*"}})
+# app.config['CORS_HEADERS'] = 'Content-Type'
+
+@app.route(f'{PREFIX}/extract_content', methods=['POST'])
 @cross_origin()
 def extract_content():
     try:
