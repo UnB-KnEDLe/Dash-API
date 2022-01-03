@@ -31,6 +31,7 @@ def extract_entity():
         response = []
         for act_name in acts_dfs:
             df = acts_dfs[act_name]
+            colums = df.columns.tolist()
             df = df.where(pd.notnull(df), None) # Remove NaN
             df_list = df.values.tolist()
             if len(df_list) > 0:
@@ -38,7 +39,8 @@ def extract_entity():
                     del item[0]
                 response.append({
                     'content': df_list,
-                    'title': act_name
+                    'title': act_name,
+                    'columns': colums
                 })
 
         return jsonify(response)
