@@ -25,7 +25,11 @@ def extract_entity():
 
         acts_dfs = ActsExtractor.get_all_df('tmp_txt.txt', type)
     
-        os.remove(f.filename)
+        try:
+            os.remove(f.filename)
+        except:
+            pass
+        
         os.remove('tmp_txt.txt')
 
         response = []
