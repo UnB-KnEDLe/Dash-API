@@ -28,10 +28,9 @@ def extract_entity():
     
         try:
             os.remove(f.filename)
+            os.remove('tmp_txt.txt')
         except:
             pass
-        
-        os.remove('tmp_txt.txt')
 
         response = []
         for act_name in acts_dfs:
@@ -66,15 +65,17 @@ def extract_acts():
         temp_text.close()
 
         acts_dfs = ActsExtractor.get_all_obj('tmp_txt.txt', 'ner')
-    
-        os.remove(f.filename)
-        os.remove('tmp_txt.txt')
+
+        try:
+            os.remove(f.filename)
+            os.remove('tmp_txt.txt')
+        except FileNotFoundError:
+            print('Erro na remoção de uma dos arquivos. Continuando normalmente...')
 
         response = {}
         for act_name in acts_dfs:
             df = acts_dfs[act_name]
             df = df.acts_str
-            print(df)
             response[act_name] = df
 
         return jsonify(response)
