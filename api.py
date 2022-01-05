@@ -1,3 +1,4 @@
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 from dodfminer.extract.pure.core import ContentExtractor
@@ -83,5 +84,4 @@ def extract_acts():
     return 'Not a pdf file', 400
 
 if __name__ == '__main__':
-    print('chegando aqui')
     app.run('0.0.0.0', 5000)
