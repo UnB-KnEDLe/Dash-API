@@ -22,6 +22,7 @@ def extract_entity():
         temp_text = open('tmp_txt.txt', 'w+')
         text = ContentExtractor.extract_text(f.filename)
         temp_text.write(text)
+        temp_text.close()
 
         acts_dfs = ActsExtractor.get_all_df('tmp_txt.txt', type)
     
@@ -62,6 +63,7 @@ def extract_acts():
         temp_text = open('tmp_txt.txt', 'w+')
         text = ContentExtractor.extract_text(f.filename)
         temp_text.write(text)
+        temp_text.close()
 
         acts_dfs = ActsExtractor.get_all_obj('tmp_txt.txt', 'ner')
     
