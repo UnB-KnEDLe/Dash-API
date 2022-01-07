@@ -44,7 +44,7 @@ def extract_entity():
                 null_list = []
                 for i, item in enumerate(df_list):
                     del item[0]
-                    if not all(x is None for x in item) or len(filter(lambda x: isinstance(x, list), item)) == 0:
+                    if not all(x is None for x in item) or len(list(filter(lambda x: isinstance(x, list), item))) == 0:
                         null_list.append(i)
                 df_list = [item for i, item in enumerate(df_list) if i not in null_list]
                 response.append({
