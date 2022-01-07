@@ -75,13 +75,14 @@ def extract_acts():
         response = {}
         for act_name in acts_dfs:
             df = acts_dfs[act_name]
-            df = df.acts_str
-            response[act_name] = df
+            response[act_name] = df.acts_str
+        
+        for act in response:
+            print(act, len(response[act]))
 
         return jsonify(response)
         
     return 'Not a pdf file', 400
 
 if __name__ == '__main__':
-    print('chegando aqui')
     app.run('0.0.0.0', 5000)
