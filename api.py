@@ -74,7 +74,11 @@ def extract_acts():
             print('Erro na remoção de uma dos arquivos. Continuando normalmente...')
 
         response = {}
+
+        print(acts_dfs)
+
         for act_name in acts_dfs:
+            print(act_name)
             df = acts_dfs[act_name]
             df = df.acts_str
             response[act_name] = df
