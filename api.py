@@ -1,3 +1,4 @@
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 from dodfminer.extract.pure.core import ContentExtractor
@@ -73,7 +74,11 @@ def extract_acts():
             print('Erro na remoção de uma dos arquivos. Continuando normalmente...')
 
         response = {}
+
+        print(acts_dfs)
+
         for act_name in acts_dfs:
+            print(act_name)
             df = acts_dfs[act_name]
             response[act_name] = df.acts_str
         
