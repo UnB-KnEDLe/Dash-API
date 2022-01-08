@@ -42,12 +42,17 @@ def extract_entity():
         df = df.where(pd.notnull(df), None) # Remove NaN
         df_list = df.values.tolist()
 
+        null_list = []
+
         if len(df_list) > 0:
             for index, row in enumerate(df_list):
                 del df_list[index][0]
                 list_null = [x for x in row if x is None or isinstance(x, list)]
-                if len(list_null) == 0:
-                    del df_list[index]
+                if len(list_null) > 0:
+                    null_list.append(index)
+
+            for i in null_list[::-1]:
+                del df_list[i]
 
             response.append({
                 'content': df_list,
