@@ -3,7 +3,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 from dodfminer.extract.pure.core import ContentExtractor
 from dodfminer.extract.polished.core import ActsExtractor
-import os, time, pandas as pd
+import os, uuid, pandas as pd
 
 PREFIX = '/dash/api'
 
@@ -13,7 +13,7 @@ cors = CORS(app, resources={r"/dash/api/*": {"origins": "*"}})
 @app.route(f'{PREFIX}/extract_entity', methods=['POST'])
 @cross_origin()
 def extract_entity():
-    name = request.remote_addr + '_' + str(int(time.time()))
+    name = uuid.uuid4().hex
     f = request.files['file']
 
     if not f.filename.endswith('.pdf'):
