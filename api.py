@@ -3,91 +3,94 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 from dodfminer.extract.pure.core import ContentExtractor
 from dodfminer.extract.polished.core import ActsExtractor
-import os, pandas as pd
+import os, time, pandas as pd
 
 PREFIX = '/dash/api'
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/dash/api/*": {"origins": "*"}})
-# app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route(f'{PREFIX}/extract_entity', methods=['POST'])
 @cross_origin()
 def extract_entity():
-    type = 'ner'
-
+    name = request.remote_addr + '_' + str(int(time.time()))
     f = request.files['file']
-    f.save(f.filename)
 
-    if 'pdf' in f.filename:
-        temp_text = open('tmp_txt.txt', 'w+')
-        text = ContentExtractor.extract_text(f.filename)
-        temp_text.write(text)
-        temp_text.close()
+    if not f.filename.endswith('.pdf'):
+        return 'Not a pdf file', 400
 
-        acts_dfs = ActsExtractor.get_all_df('tmp_txt.txt', type)
-    
-        try:
-            os.remove(f.filename)
-            os.remove('tmp_txt.txt')
-        except:
-            pass
+    f.save(name + '.pdf')
 
-        response = []
-        for act_name in acts_dfs:
-            df = acts_dfs[act_name]
-            columns = df.columns.tolist()
-            columns = columns[1:]
-            df = df.where(pd.notnull(df), None) # Remove NaN
-            df_list = df.values.tolist()
-            if len(df_list) > 0:
-                for i, item in enumerate(df_list):
-                    del item[0]
-                response.append({
-                    'content': df_list,
-                    'title': act_name,
-                    'columns': columns
-                })
+    temp_text = open(name + '.txt', 'w+')
+    text = ContentExtractor.extract_text(name + '.pdf')
+    temp_text.write(text)
+    temp_text.close()
 
-        return jsonify(response)
-        
-    return 'Not a pdf file', 400
+    acts_dfs = ActsExtractor.get_all_df(name + '.txt', 'ner')
+
+    try:
+        os.remove(name + '.pdf')
+        os.remove(name + '.txt')
+    except:
+        pass
+
+    response = []
+    for act_name in acts_dfs:
+        df = acts_dfs[act_name]
+        columns = df.columns.tolist()
+        columns = columns[1:]
+        df = df.where(pd.notnull(df), None) # Remove NaN
+        df_list = df.values.tolist()
+
+        if len(df_list) > 0:
+            for i, item in enumerate(df_list):
+                del item[0]
+            response.append({
+                'content': df_list,
+                'title': act_name,
+                'columns': columns
+            })
+        response = sorted(response, key=lambda k: k['title'])
+
+    return jsonify(response)
 
 @app.route(f'{PREFIX}/extract_acts', methods=['POST'])
 @cross_origin()
 def extract_acts():
+    name = request.remote_addr + '_' + str(int(time.time()))
     f = request.files['file']
-    f.save(f.filename)
 
-    if 'pdf' in f.filename:
-        temp_text = open('tmp_txt.txt', 'w+')
-        text = ContentExtractor.extract_text(f.filename)
-        temp_text.write(text)
-        temp_text.close()
+    if not f.filename.endswith('.pdf'):
+        return 'Not a pdf file', 400
 
-        acts_dfs = ActsExtractor.get_all_obj('tmp_txt.txt', 'ner')
+    f.save(name + '.pdf')
 
-        try:
-            os.remove(f.filename)
-            os.remove('tmp_txt.txt')
-        except FileNotFoundError:
-            print('Erro na remoção de uma dos arquivos. Continuando normalmente...')
+    temp_text = open(name + '.txt', 'w+')
+    text = ContentExtractor.extract_text(name + '.pdf')
+    temp_text.write(text)
+    temp_text.close()
 
-        response = {}
+    acts_dfs = ActsExtractor.get_all_obj(name + '.txt', 'ner')
 
-        print(acts_dfs)
+    try:
+        os.remove(name + '.pdf')
+        os.remove(name + '.txt')
+    except FileNotFoundError:
+        print('Erro na remoção de uma dos arquivos. Continuando normalmente...')
 
-        for act_name in acts_dfs:
-            print(act_name)
-            df = acts_dfs[act_name]
-            response[act_name] = df.acts_str
-        
-        for act in response:
-            print(act, len(response[act]))
+    response = {}
 
-        return jsonify(response)
-        
-    return 'Not a pdf file', 400
+    print(acts_dfs)
+
+    for act_name in acts_dfs:
+        print(act_name)
+        df = acts_dfs[act_name]
+        response[act_name] = df.acts_str
+    
+    for act in response:
+        print(act, len(response[act]))
+
+    return jsonify(response)
 
 if __name__ == '__main__':
     app.run('0.0.0.0', 5000)
