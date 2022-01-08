@@ -45,6 +45,12 @@ def extract_entity():
         if len(df_list) > 0:
             for i, item in enumerate(df_list):
                 del item[0]
+
+            for index, row in enumerate(df_list):
+                list_null = [x for x in row if x is None or isinstance(x, list)]
+                if len(list_null) == 0:
+                    del df_list[index]
+
             response.append({
                 'content': df_list,
                 'title': act_name,
