@@ -43,10 +43,8 @@ def extract_entity():
         df_list = df.values.tolist()
 
         if len(df_list) > 0:
-            for i, item in enumerate(df_list):
-                del item[0]
-
             for index, row in enumerate(df_list):
+                del df_list[index][0]
                 list_null = [x for x in row if x is None or isinstance(x, list)]
                 if len(list_null) == 0:
                     del df_list[index]
