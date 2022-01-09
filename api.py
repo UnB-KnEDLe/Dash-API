@@ -60,7 +60,7 @@ def extract_entity():
 @app.route(f'{PREFIX}/extract_acts', methods=['POST'])
 @cross_origin()
 def extract_acts():
-    name = request.remote_addr + '_' + str(int(time.time()))
+    name = uuid.uuid4().hex
     f = request.files['file']
 
     if not f.filename.endswith('.pdf'):
