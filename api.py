@@ -128,10 +128,13 @@ def extract_acts():
         if len(entities) > 0:
             for index, _ in enumerate(entities):
                 del entities[index][0]
+        
+        content = []
+        for index, entity in enumerate(entities):
+            content.append({'entities': entity, 'text': acts.acts_str[index]})
 
         response[act_name] = {
-            'text': acts.acts_str,
-            'entities': entities,
+            'content': content,
             'title': act_name,
             'columns': columns
         }
