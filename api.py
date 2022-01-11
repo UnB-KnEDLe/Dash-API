@@ -92,7 +92,7 @@ if __name__ == '__main__':
 
 @app.route(f'{PREFIX}/extract_all', methods=['POST'])
 @cross_origin()
-def extract_acts():
+def extract_all():
     name = uuid.uuid4().hex
     f = request.files['file']
 
