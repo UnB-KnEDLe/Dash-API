@@ -87,9 +87,6 @@ def extract_acts():
 
     return jsonify(response)
 
-if __name__ == '__main__':
-    app.run('0.0.0.0', 5000)
-
 @app.route(f'{PREFIX}/extract_all', methods=['POST'])
 @cross_origin()
 def extract_all():
