@@ -134,12 +134,12 @@ def extract_all():
                 'file': f.filename,
             })
 
-        if len(content) > 0:
-            response[act_name] = {
-                'content': content,
-                'title': act_name,
-                'columns': columns
-            }
+        response[act_name] = {
+            'file': f.filename,
+            'content': content,
+            'title': act_name,
+            'columns': columns
+        }
 
     return response
 
