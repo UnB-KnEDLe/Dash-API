@@ -118,6 +118,7 @@ def extract_all():
         df = acts.data_frame
 
         columns = df.columns.tolist()
+        columns = columns[1:]
 
         entities = df.where(pd.notnull(df), None) # Remove NaN
         entities = entities.values.tolist()
