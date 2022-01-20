@@ -118,23 +118,24 @@ def extract_all():
         df = acts.data_frame
 
         columns = df.columns.tolist()
-        columns = columns[1:]
 
-        entities = df.where(pd.notnull(df), None) # Remove NaN
-        entities = entities.values.tolist()
-        if len(entities) > 0:
-            for index, _ in enumerate(entities):
-                del entities[index][0]
-        
-        content = []
-        for index, entity in enumerate(entities):
-            content.append({'entities': entity, 'text': acts.acts_str[index]})
+        if len(columns) > 0:
+            entities = df.where(pd.notnull(df), None) # Remove NaN
+            entities = entities.values.tolist()
+            if len(entities) > 0:
+                for index, _ in enumerate(entities):
+                    del entities[index][0]
+            
+            content = []
+            for index, entity in enumerate(entities):
+                content.append({'entities': entity, 'text': acts.acts_str[index]})
 
-        response[act_name] = {
-            'content': content,
-            'title': act_name,
-            'columns': columns
-        }
+            response[act_name] = {
+                'file': f.filename,
+                'content': content,
+                'title': act_name,
+                'columns': columns
+            }
 
     return response
 
