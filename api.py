@@ -130,12 +130,13 @@ def extract_all():
         for index, entity in enumerate(entities):
             content.append({'entities': entity, 'text': acts.acts_str[index]})
 
-        response[act_name] = {
-            'file': f.filename,
-            'content': content,
-            'title': act_name,
-            'columns': columns
-        }
+        if len(content) > 0:
+            response[act_name] = {
+                'file': f.filename,
+                'content': content,
+                'title': act_name,
+                'columns': columns
+            }
 
     return response
 
