@@ -37,14 +37,13 @@ def extract_entity():
     response = []
     for act_name in acts_dfs:
         df = acts_dfs[act_name]
-        columns = df.columns.tolist()
-        columns = columns[1:]
+        columns = df.columns.tolist()        
         df = df.where(pd.notnull(df), None) # Remove NaN
         df_list = df.values.tolist()
 
-        if len(df_list) > 0:
-            for index, _ in enumerate(df_list):
-                del df_list[index][0]
+        if len(df_list) > 0 and columns[0].lower() == "ato":
+            columns = columns[1:]
+            df_list = [entity[1:] for entity in df_list]
 
             response.append({
                 'content': df_list,
@@ -118,13 +117,13 @@ def extract_all():
         df = acts.data_frame
 
         columns = df.columns.tolist()
-        columns = columns[1:]
 
         entities = df.where(pd.notnull(df), None) # Remove NaN
         entities = entities.values.tolist()
-        if len(entities) > 0:
-            for index, _ in enumerate(entities):
-                del entities[index][0]
+        
+        if len(entities) > 0 and columns[0].lower() == "ato":
+            columns = columns[1:]
+            entities = [entity[1:] for entity in entities]
 
         content = []
         for index, entity in enumerate(entities):
